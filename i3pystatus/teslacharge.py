@@ -1,4 +1,5 @@
 from tesla_api import TeslaApiClient
+
 from i3pystatus import IntervalModule
 
 

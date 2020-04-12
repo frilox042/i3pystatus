@@ -3,16 +3,15 @@ import configparser
 import os
 import re
 
-from i3pystatus import IntervalModule, formatp
+from i3pystatus import formatp
+from i3pystatus import IntervalModule
 from i3pystatus.core.command import run_through_shell
 from i3pystatus.core.desktop import DesktopNotification
-from i3pystatus.core.util import (
-    lchop,
-    TimeWrapper,
-    make_bar,
-    make_glyph,
-    make_vertical_bar,
-)
+from i3pystatus.core.util import lchop
+from i3pystatus.core.util import make_bar
+from i3pystatus.core.util import make_glyph
+from i3pystatus.core.util import make_vertical_bar
+from i3pystatus.core.util import TimeWrapper
 
 
 class UEventParser(configparser.ConfigParser):

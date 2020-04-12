@@ -1,9 +1,12 @@
-from i3pystatus import IntervalModule
+import subprocess
+from datetime import datetime
+from datetime import timezone
 from json import loads
+
 from dateutil.parser import parse
 from dateutil.relativedelta import relativedelta
-from datetime import datetime, timezone
-import subprocess
+
+from i3pystatus import IntervalModule
 
 
 class Timewarrior(IntervalModule):

@@ -1,6 +1,7 @@
 from i3pystatus.core.color import ColorRangeModule
+from i3pystatus.core.util import make_bar
+from i3pystatus.core.util import make_vertical_bar
 from i3pystatus.cpu_usage import CpuUsage
-from i3pystatus.core.util import make_bar, make_vertical_bar
 
 
 class CpuUsageBar(CpuUsage, ColorRangeModule):

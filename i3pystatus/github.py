@@ -5,10 +5,13 @@ import threading
 import time
 from urllib.request import urlopen
 
-from i3pystatus import IntervalModule, formatp
+from i3pystatus import formatp
+from i3pystatus import IntervalModule
 from i3pystatus.core import ConfigError
 from i3pystatus.core.desktop import DesktopNotification
-from i3pystatus.core.util import user_open, internet, require
+from i3pystatus.core.util import internet
+from i3pystatus.core.util import require
+from i3pystatus.core.util import user_open
 
 try:
     import requests

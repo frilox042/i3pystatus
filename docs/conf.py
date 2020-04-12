@@ -10,10 +10,10 @@
 #
 # All configuration values have a default; values that are commented out
 # serve to show the default.
+import os
+import sys
 
 import mock
-import sys
-import os
 
 sys.path.insert(0, os.path.abspath("."))
 sys.path.insert(0, os.path.abspath(".."))
