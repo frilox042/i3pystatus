@@ -53,13 +53,11 @@ def get_bluetooth_device_list(show_disconnected):
         if not show_disconnected:
             if not getprop(obj, "Connected", bool):
                 continue
-        bt_devices.append(
-            {
-                "name": getprop(obj, "Name", str),
-                "dev_addr": getprop(obj, "Address", str),
-                "connected": getprop(obj, "Connected", bool),
-            }
-        )
+        bt_devices.append({
+            "name": getprop(obj, "Name", str),
+            "dev_addr": getprop(obj, "Address", str),
+            "connected": getprop(obj, "Connected", bool),
+        })
     return bt_devices
 
 

@@ -48,8 +48,8 @@ class Battery:
     def normalize_micro(self):
         for key, micro_value in self.battery_info.items():
             if re.match(
-                r"(VOLTAGE|CHARGE|CURRENT|POWER|ENERGY)_(NOW|FULL|MIN)(_DESIGN)?", key
-            ):
+                    r"(VOLTAGE|CHARGE|CURRENT|POWER|ENERGY)_(NOW|FULL|MIN)(_DESIGN)?",
+                    key):
                 self.battery_info[key] = float(micro_value) / 1000000.0
 
     def percentage(self, design=False):
@@ -59,11 +59,9 @@ class Battery:
         if self.consumption() is None:
             return self.battery_info["STATUS"]
         elif self.consumption() > 0.1 and self.percentage() < 99.9:
-            return (
-                "Discharging"
-                if self.battery_info["STATUS"] == "Discharging"
-                else "Charging"
-            )
+            return ("Discharging"
+                    if self.battery_info["STATUS"] == "Discharging" else
+                    "Charging")
         elif self.consumption() == 0 and self.percentage() == 0.00:
             return "Depleted"
         else:
@@ -75,54 +73,48 @@ class Battery:
 
 class BatteryCharge(Battery):
     def __init__(self, bi):
-        bi["CHARGE_FULL"] = (
-            bi["CHARGE_FULL_DESIGN"]
-            if bi["CHARGE_NOW"] > bi["CHARGE_FULL"]
-            else bi["CHARGE_FULL"]
-        )
+        bi["CHARGE_FULL"] = (bi["CHARGE_FULL_DESIGN"]
+                             if bi["CHARGE_NOW"] > bi["CHARGE_FULL"] else
+                             bi["CHARGE_FULL"])
         super().__init__(bi)
 
     def consumption(self):
         if "VOLTAGE_NOW" in self.battery_info and "CURRENT_NOW" in self.battery_info:
             return super().consumption(
-                self.battery_info["VOLTAGE_NOW"] * abs(self.battery_info["CURRENT_NOW"])
-            )  # V * A = W
+                self.battery_info["VOLTAGE_NOW"] *
+                abs(self.battery_info["CURRENT_NOW"]))  # V * A = W
         else:
             return None
 
     def _percentage(self, design):
-        return (
-            self.battery_info["CHARGE_NOW"] / self.battery_info["CHARGE_FULL" + design]
-        )
+        return (self.battery_info["CHARGE_NOW"] /
+                self.battery_info["CHARGE_FULL" + design])
 
     def wh_remaining(self):
-        return self.battery_info["CHARGE_NOW"] * self.battery_info["VOLTAGE_NOW"]
+        return self.battery_info["CHARGE_NOW"] * self.battery_info[
+            "VOLTAGE_NOW"]
 
     def wh_total(self):
-        return self.battery_info["CHARGE_FULL"] * self.battery_info["VOLTAGE_NOW"]
+        return self.battery_info["CHARGE_FULL"] * self.battery_info[
+            "VOLTAGE_NOW"]
 
     def wh_depleted(self):
         return (
-            self.battery_info["CHARGE_FULL"] - self.battery_info["CHARGE_NOW"]
-        ) * self.battery_info["VOLTAGE_NOW"]
+            self.battery_info["CHARGE_FULL"] -
+            self.battery_info["CHARGE_NOW"]) * self.battery_info["VOLTAGE_NOW"]
 
     def remaining(self):
         if self.status() == "Discharging":
             if "CHARGE_NOW" in self.battery_info and "CURRENT_NOW" in self.battery_info:
                 # Ah / A = h * 60 min = min
-                return (
-                    self.battery_info["CHARGE_NOW"]
-                    / self.battery_info["CURRENT_NOW"]
-                    * 60
-                )
+                return (self.battery_info["CHARGE_NOW"] /
+                        self.battery_info["CURRENT_NOW"] * 60)
             else:
                 return -1
         else:
-            return (
-                (self.battery_info["CHARGE_FULL"] - self.battery_info["CHARGE_NOW"])
-                / self.battery_info["CURRENT_NOW"]
-                * 60
-            )
+            return ((self.battery_info["CHARGE_FULL"] -
+                     self.battery_info["CHARGE_NOW"]) /
+                    self.battery_info["CURRENT_NOW"] * 60)
 
 
 class BatteryEnergy(Battery):
@@ -130,9 +122,8 @@ class BatteryEnergy(Battery):
         return super().consumption(self.battery_info["POWER_NOW"])
 
     def _percentage(self, design):
-        return (
-            self.battery_info["ENERGY_NOW"] / self.battery_info["ENERGY_FULL" + design]
-        )
+        return (self.battery_info["ENERGY_NOW"] /
+                self.battery_info["ENERGY_FULL" + design])
 
     def wh_remaining(self):
         return self.battery_info["ENERGY_NOW"]
@@ -141,18 +132,18 @@ class BatteryEnergy(Battery):
         return self.battery_info["ENERGY_FULL"]
 
     def wh_depleted(self):
-        return self.battery_info["ENERGY_FULL"] - self.battery_info["ENERGY_NOW"]
+        return self.battery_info["ENERGY_FULL"] - self.battery_info[
+            "ENERGY_NOW"]
 
     def remaining(self):
         if self.status() == "Discharging":
             # Wh / W = h * 60 min = min
-            return self.battery_info["ENERGY_NOW"] / self.battery_info["POWER_NOW"] * 60
+            return self.battery_info["ENERGY_NOW"] / self.battery_info[
+                "POWER_NOW"] * 60
         else:
-            return (
-                (self.battery_info["ENERGY_FULL"] - self.battery_info["ENERGY_NOW"])
-                / self.battery_info["POWER_NOW"]
-                * 60
-            )
+            return ((self.battery_info["ENERGY_FULL"] -
+                     self.battery_info["ENERGY_NOW"]) /
+                    self.battery_info["POWER_NOW"] * 60)
 
 
 class BatteryChecker(IntervalModule):
@@ -244,7 +235,8 @@ class BatteryChecker(IntervalModule):
             "path",
             "Override the default-generated path and specify the full path for a single battery",
         ),
-        ("base_path", "Override the default base path for searching for batteries"),
+        ("base_path",
+         "Override the default base path for searching for batteries"),
         ("battery_prefix", "Override the default battery prefix"),
         (
             "status",
@@ -359,7 +351,9 @@ class BatteryChecker(IntervalModule):
             bat_dir = self.base_path
             if os.path.exists(bat_dir) and not self.path:
                 _, dirs, _ = next(os.walk(bat_dir))
-                all_bats = [x for x in dirs if x.startswith(self.battery_prefix)]
+                all_bats = [
+                    x for x in dirs if x.startswith(self.battery_prefix)
+                ]
                 for bat in all_bats:
                     self.paths.append(os.path.join(bat_dir, bat, "uevent"))
             if self.path:
@@ -371,7 +365,8 @@ class BatteryChecker(IntervalModule):
         batteries = []
 
         for path in self.paths:
-            if self.battery_ident == "ALL" or path.find(self.battery_ident) >= 0:
+            if self.battery_ident == "ALL" or path.find(
+                    self.battery_ident) >= 0:
                 try:
                     batteries.append(Battery.create(path))
                 except FileNotFoundError:
@@ -390,19 +385,28 @@ class BatteryChecker(IntervalModule):
                 return
 
         fdict = {
-            "battery_ident": self.battery_ident,
-            "no_of_batteries": len(batteries),
-            "percentage": self.percentage(batteries),
-            "percentage_design": self.percentage(batteries, design=True),
-            "consumption": self.consumption(batteries),
-            "remaining": TimeWrapper(0, "%E%h:%M"),
-            "glyph": make_glyph(self.percentage(batteries), self.glyphs),
-            "bar": make_bar(self.percentage(batteries)),
-            "bar_design": make_bar(self.percentage(batteries, design=True)),
-            "vertical_bar": make_vertical_bar(self.percentage(batteries)),
-            "vertical_bar_design": make_vertical_bar(
-                self.percentage(batteries, design=True)
-            ),
+            "battery_ident":
+            self.battery_ident,
+            "no_of_batteries":
+            len(batteries),
+            "percentage":
+            self.percentage(batteries),
+            "percentage_design":
+            self.percentage(batteries, design=True),
+            "consumption":
+            self.consumption(batteries),
+            "remaining":
+            TimeWrapper(0, "%E%h:%M"),
+            "glyph":
+            make_glyph(self.percentage(batteries), self.glyphs),
+            "bar":
+            make_bar(self.percentage(batteries)),
+            "bar_design":
+            make_bar(self.percentage(batteries, design=True)),
+            "vertical_bar":
+            make_vertical_bar(self.percentage(batteries)),
+            "vertical_bar_design":
+            make_vertical_bar(self.percentage(batteries, design=True)),
         }
 
         status = self.battery_status(batteries)
@@ -423,11 +427,8 @@ class BatteryChecker(IntervalModule):
         else:
             fdict["status"] = "FULL"
             color = self.full_color
-        if (
-            self.critical_level_command
-            and fdict["status"] == "DIS"
-            and fdict["percentage"] <= self.critical_level_percentage
-        ):
+        if (self.critical_level_command and fdict["status"] == "DIS"
+                and fdict["percentage"] <= self.critical_level_percentage):
             run_through_shell(self.critical_level_command, enable_shell=True)
 
         self.alert_if_low_battery(fdict)
@@ -455,11 +456,8 @@ class BatteryChecker(IntervalModule):
         else:
             percentage = fdict["percentage"]
 
-        if (
-            self.alert
-            and fdict["status"] == "DIS"
-            and percentage <= self.alert_percentage
-        ):
+        if (self.alert and fdict["status"] == "DIS"
+                and percentage <= self.alert_percentage):
             title, body = (
                 formatp(self.alert_format_title, **fdict),
                 formatp(self.alert_format_body, **fdict),

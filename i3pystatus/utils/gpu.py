@@ -51,13 +51,11 @@ def query_nvidia_smi(gpu_number) -> GPUUsageInfo:
         "utilization.memory",
     ]
     try:
-        output = subprocess.check_output(
-            [
-                "nvidia-smi",
-                "--query-gpu={}".format(",".join(params)),
-                "--format=csv,noheader,nounits",
-            ]
-        )
+        output = subprocess.check_output([
+            "nvidia-smi",
+            "--query-gpu={}".format(",".join(params)),
+            "--format=csv,noheader,nounits",
+        ])
     except FileNotFoundError:
         raise Exception("No nvidia-smi")
     except subprocess.CalledProcessError:

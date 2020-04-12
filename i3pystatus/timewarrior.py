@@ -60,11 +60,8 @@ class Timewarrior(IntervalModule):
     def run(self):
         self.loadTrack()
         start = parse(self.track["start"])
-        end = (
-            parse(self.track["end"])
-            if "end" in self.track
-            else datetime.now(timezone.utc)
-        )
+        end = (parse(self.track["end"])
+               if "end" in self.track else datetime.now(timezone.utc))
         duration = relativedelta(end, start)
 
         format_values = dict(
@@ -81,6 +78,8 @@ class Timewarrior(IntervalModule):
         )
 
         self.output = {
-            "full_text": self.format.format(**format_values),
-            "color": self.color_stopped if "end" in self.track else self.color_running,
+            "full_text":
+            self.format.format(**format_values),
+            "color":
+            self.color_stopped if "end" in self.track else self.color_running,
         }

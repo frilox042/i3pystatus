@@ -214,7 +214,8 @@ class Github(IntervalModule):
         ),
         (
             "keyring_backend",
-            "alternative keyring backend for retrieving " "credentials",
+            "alternative keyring backend for retrieving "
+            "credentials",
         ),
         ("username", ""),
         ("password", ""),
@@ -226,7 +227,8 @@ class Github(IntervalModule):
         ),
         (
             "notify_status",
-            "Set to ``True`` to display a desktop notification " "on status changes",
+            "Set to ``True`` to display a desktop notification "
+            "on status changes",
         ),
         (
             "notify_unread",
@@ -376,9 +378,8 @@ class Github(IntervalModule):
                     response = json.loads(response_json)
                 except json.decoder.JSONDecodeError as exc:
                     self.logger.error("Error loading JSON: %s", exc)
-                    self.logger.debug(
-                        "JSON text that failed to load: %s", response_json
-                    )
+                    self.logger.debug("JSON text that failed to load: %s",
+                                      response_json)
                     return {}
                 self.logger.log(5, "API response: %s", response)
                 return response
@@ -399,9 +400,9 @@ class Github(IntervalModule):
                 # i3pystatus was started. Set self.__previous_json and exit.
                 self.__previous_json = response
                 return
-            if response.get("status", {}).get(
-                "description"
-            ) == self.__previous_json.get("status", {}).get("description"):
+            if response.get("status",
+                            {}).get("description") == self.__previous_json.get(
+                                "status", {}).get("description"):
                 # No change, so no notification
                 return
             self.__previous_json = response
@@ -419,15 +420,15 @@ class Github(IntervalModule):
 
     def skip_notify(self, message):
         self.logger.debug(
-            "Desktop notifications turned off. Skipped notification: %s", message
-        )
+            "Desktop notifications turned off. Skipped notification: %s",
+            message)
         return False
 
     def show_status_notification(self):
         message = self.current_status_description
         self.skip_notify(message) if not self.notify_status or (
-            self.previous_status is None and self.current_status == "none"
-        ) else self.notify(message)
+            self.previous_status is None
+            and self.current_status == "none") else self.notify(message)
 
     def show_unread_notification(self):
         if "%d" not in self.unread_notification_template:
@@ -440,21 +441,16 @@ class Github(IntervalModule):
             try:
                 formatted = self.unread_notification_template % new_unread
             except TypeError as exc:
-                self.logger.error(
-                    "Failed to format {0!r}: {1}".format(
-                        self.unread_notification_template, exc
-                    )
-                )
+                self.logger.error("Failed to format {0!r}: {1}".format(
+                    self.unread_notification_template, exc))
                 return False
-        return (
-            self.skip_notify(formatted)
-            if not self.notify_unread
-            else self.notify(formatted)
-        )
+        return (self.skip_notify(formatted)
+                if not self.notify_unread else self.notify(formatted))
 
     @require(internet)
     def perform_update(self):
-        self.output["full_text"] = self.refresh_icon + self.output.get("full_text", "")
+        self.output["full_text"] = self.refresh_icon + self.output.get(
+            "full_text", "")
         self.failed_update = False
 
         self.update_status()
@@ -464,7 +460,8 @@ class Github(IntervalModule):
         except ConfigError as exc:
             self.config_error = exc
 
-        self.data["update_error"] = self.update_error if self.failed_update else ""
+        self.data[
+            "update_error"] = self.update_error if self.failed_update else ""
         self.refresh_display()
 
     @property
@@ -534,8 +531,7 @@ class Github(IntervalModule):
             if not self.username and not self.password and not self.access_token:
                 # Auth not configured
                 self.logger.debug(
-                    "No auth configured, notifications will not be checked"
-                )
+                    "No auth configured, notifications will not be checked")
                 return True
 
             if not HAS_REQUESTS:
@@ -552,7 +548,9 @@ class Github(IntervalModule):
 
             if self.access_token:
                 request_kwargs = {
-                    "headers": {"Authorization": "token {}".format(self.access_token),},
+                    "headers": {
+                        "Authorization": "token {}".format(self.access_token),
+                    },
                 }
             else:
                 request_kwargs = {
@@ -566,9 +564,8 @@ class Github(IntervalModule):
             while old_unread_url != unread_url:
                 old_unread_url = unread_url
                 page_num += 1
-                self.logger.debug(
-                    "Reading page %d of notifications (%s)", page_num, unread_url
-                )
+                self.logger.debug("Reading page %d of notifications (%s)",
+                                  page_num, unread_url)
                 try:
                     response = requests.get(unread_url, **request_kwargs)
                     self.logger.log(
@@ -578,14 +575,14 @@ class Github(IntervalModule):
                     )
                     unread_data = json.loads(response.text)
                 except (requests.ConnectionError, requests.Timeout) as exc:
-                    self.logger.error("Failed to check unread notifications: %s", exc)
+                    self.logger.error(
+                        "Failed to check unread notifications: %s", exc)
                     self.failed_update = True
                     return False
                 except json.decoder.JSONDecodeError as exc:
                     self.logger.error("Error loading JSON: %s", exc)
-                    self.logger.debug(
-                        "JSON text that failed to load: %s", response.text
-                    )
+                    self.logger.debug("JSON text that failed to load: %s",
+                                      response.text)
                     self.failed_update = True
                     return False
 
@@ -595,11 +592,11 @@ class Github(IntervalModule):
                         unread_data.get(
                             "message",
                             "Unknown error encountered retrieving unread notifications",
-                        )
-                    )
+                        ))
 
                 # Update the current count of unread notifications
-                self.current_unread.update([x["id"] for x in unread_data if "id" in x])
+                self.current_unread.update(
+                    [x["id"] for x in unread_data if "id" in x])
 
                 # Check 'Link' header for next page of notifications
                 # (https://tools.ietf.org/html/rfc5988#section-5)
@@ -609,8 +606,7 @@ class Github(IntervalModule):
                 except AttributeError:
                     self.logger.error(
                         "No headers present in response. This might be due to "
-                        "an API change in the requests module."
-                    )
+                        "an API change in the requests module.")
                     self.failed_update = True
                     continue
                 except KeyError:
@@ -621,7 +617,8 @@ class Github(IntervalModule):
                     try:
                         links = requests.utils.parse_header_links(link_header)
                     except Exception as exc:
-                        self.logger.error("Failed to parse 'Link' header: %s", exc)
+                        self.logger.error("Failed to parse 'Link' header: %s",
+                                          exc)
                         self.failed_update = True
                         continue
 
@@ -645,15 +642,15 @@ class Github(IntervalModule):
                             )
                             continue
                     else:
-                        self.logger.debug("No more pages of notifications remain")
+                        self.logger.debug(
+                            "No more pages of notifications remain")
 
             if self.failed_update:
                 return False
 
             self.data["unread_count"] = len(self.current_unread)
-            self.data["unread"] = (
-                self.unread_marker if self.data["unread_count"] > 0 else ""
-            )
+            self.data["unread"] = (self.unread_marker
+                                   if self.data["unread_count"] > 0 else "")
 
             if self.previous_unread is not None:
                 if not self.current_unread.issubset(self.previous_unread):

@@ -16,8 +16,7 @@ class Sensor:
 
     def __repr__(self):
         return "Sensor(name='{}', current={}, maximum={}, critical={})".format(
-            self.name, self.current, self.maximum, self.critical
-        )
+            self.name, self.current, self.maximum, self.critical)
 
     def is_warning(self):
         return self.current > self.maximum
@@ -42,13 +41,12 @@ def get_sensors():
             if feature.type == sensors.FEATURE_TEMP:
                 try:
                     name = chip.get_label(feature)
-                    max = get_subfeature_value(feature, sensors.SUBFEATURE_TEMP_MAX)
+                    max = get_subfeature_value(feature,
+                                               sensors.SUBFEATURE_TEMP_MAX)
                     current = get_subfeature_value(
-                        feature, sensors.SUBFEATURE_TEMP_INPUT
-                    )
+                        feature, sensors.SUBFEATURE_TEMP_INPUT)
                     critical = get_subfeature_value(
-                        feature, sensors.SUBFEATURE_TEMP_CRIT
-                    )
+                        feature, sensors.SUBFEATURE_TEMP_CRIT)
                     if critical:
                         found_sensors.append(
                             Sensor(
@@ -56,8 +54,7 @@ def get_sensors():
                                 current=current,
                                 maximum=max,
                                 critical=critical,
-                            )
-                        )
+                            ))
                 except sensors.SensorsException:
                     continue
     return found_sensors
@@ -194,10 +191,10 @@ class Temperature(IntervalModule, ColorRangeModule):
     urgent_on = "warning"
 
     def init(self):
-        self.pango_enabled = (
-            self.hints.get("markup", False) and self.hints["markup"] == "pango"
-        )
-        self.colors = self.get_hex_color_range(self.start_color, self.end_color, 100)
+        self.pango_enabled = (self.hints.get("markup", False)
+                              and self.hints["markup"] == "pango")
+        self.colors = self.get_hex_color_range(self.start_color,
+                                               self.end_color, 100)
 
     def run(self):
         if eval(self.display_if):
@@ -279,5 +276,6 @@ class Temperature(IntervalModule, ColorRangeModule):
         return '<span color="{}">{}</span>'.format(color, value)
 
     def get_colour(self, percentage):
-        index = -1 if int(percentage) > len(self.colors) - 1 else int(percentage)
+        index = -1 if int(percentage) > len(self.colors) - 1 else int(
+            percentage)
         return self.colors[index]

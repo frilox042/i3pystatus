@@ -48,7 +48,8 @@ class CpuUsageBar(CpuUsage, ColorRangeModule):
 
     def init(self):
         super().init()
-        self.colors = self.get_hex_color_range(self.start_color, self.end_color, 100)
+        self.colors = self.get_hex_color_range(self.start_color,
+                                               self.end_color, 100)
 
     def run(self):
         cpu_usage = self.get_usage()
