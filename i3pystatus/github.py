@@ -12,18 +12,19 @@ from i3pystatus.core.util import user_open, internet, require
 
 try:
     import requests
+
     HAS_REQUESTS = True
 except ImportError:
     HAS_REQUESTS = False
 
-API_METHODS_URL = 'https://www.githubstatus.com/api/v2/summary.json'
-STATUS_URL = 'https://www.githubstatus.com'
-NOTIFICATIONS_URL = 'https://github.com/notifications'
-AUTH_URL = 'https://api.github.com/notifications'
+API_METHODS_URL = "https://www.githubstatus.com/api/v2/summary.json"
+STATUS_URL = "https://www.githubstatus.com"
+NOTIFICATIONS_URL = "https://github.com/notifications"
+AUTH_URL = "https://api.github.com/notifications"
 
 
 class Github(IntervalModule):
-    '''
+    """
     This module checks the GitHub system status, and optionally the number of
     unread notifications.
 
@@ -181,73 +182,107 @@ class Github(IntervalModule):
             access_token='0123456789abcdef0123456789abcdef01234567',
             format='{status}[ ({unread_count})][ {update_error}]'
         )
-    '''
+    """
+
     settings = (
-        ('format', 'format string'),
-        ('status', 'Dictionary mapping statuses to the text which represents '
-                   'that status type. This defaults to ``GitHub`` for all '
-                   'status types.'),
-        ('colors', 'Dictionary mapping statuses to the color used to display '
-                   'the status text'),
-        ('refresh_icon', 'Text to display (in addition to any text currently '
-                         'shown by the module) when refreshing the GitHub '
-                         'status. **NOTE:** Depending on how quickly the '
-                         'update is performed, the icon may not be displayed.'),
-        ('update_error', 'Value for the ``{update_error}`` formatter when an '
-                         'error is encountered while checking GitHub status'),
-        ('keyring_backend', 'alternative keyring backend for retrieving '
-                            'credentials'),
-        ('username', ''),
-        ('password', ''),
-        ('access_token', ''),
-        ('unread_marker', 'Defines the string that the ``{unread}`` formatter '
-                          'shows when there are pending notifications'),
-        ('notify_status', 'Set to ``True`` to display a desktop notification '
-                          'on status changes'),
-        ('notify_unread', 'Set to ``True`` to display a desktop notification '
-                          'when new notifications are detected'),
-        ('unread_notification_template',
-            'String with no more than one ``%d``, which will be replaced by '
-            'the number of new unread notifications. Useful for those with '
-            'non-English locales who would like the notification to be in '
-            'their native language. The ``%d`` can be omitted if desired.'),
-        ('api_methods_url', 'URL from which to retrieve the API endpoint URL '
-                            'which this module will use to check the GitHub '
-                            'Status'),
-        ('status_url', 'The URL to the status page (opened when the module is '
-                       'double-clicked with the right mouse button'),
-        ('notifications_url', 'The URL to the GitHub notifications page '
-                              '(opened when the module is double-clicked with '
-                              'the left mouse button'),
+        ("format", "format string"),
+        (
+            "status",
+            "Dictionary mapping statuses to the text which represents "
+            "that status type. This defaults to ``GitHub`` for all "
+            "status types.",
+        ),
+        (
+            "colors",
+            "Dictionary mapping statuses to the color used to display "
+            "the status text",
+        ),
+        (
+            "refresh_icon",
+            "Text to display (in addition to any text currently "
+            "shown by the module) when refreshing the GitHub "
+            "status. **NOTE:** Depending on how quickly the "
+            "update is performed, the icon may not be displayed.",
+        ),
+        (
+            "update_error",
+            "Value for the ``{update_error}`` formatter when an "
+            "error is encountered while checking GitHub status",
+        ),
+        (
+            "keyring_backend",
+            "alternative keyring backend for retrieving " "credentials",
+        ),
+        ("username", ""),
+        ("password", ""),
+        ("access_token", ""),
+        (
+            "unread_marker",
+            "Defines the string that the ``{unread}`` formatter "
+            "shows when there are pending notifications",
+        ),
+        (
+            "notify_status",
+            "Set to ``True`` to display a desktop notification " "on status changes",
+        ),
+        (
+            "notify_unread",
+            "Set to ``True`` to display a desktop notification "
+            "when new notifications are detected",
+        ),
+        (
+            "unread_notification_template",
+            "String with no more than one ``%d``, which will be replaced by "
+            "the number of new unread notifications. Useful for those with "
+            "non-English locales who would like the notification to be in "
+            "their native language. The ``%d`` can be omitted if desired.",
+        ),
+        (
+            "api_methods_url",
+            "URL from which to retrieve the API endpoint URL "
+            "which this module will use to check the GitHub "
+            "Status",
+        ),
+        (
+            "status_url",
+            "The URL to the status page (opened when the module is "
+            "double-clicked with the right mouse button",
+        ),
+        (
+            "notifications_url",
+            "The URL to the GitHub notifications page "
+            "(opened when the module is double-clicked with "
+            "the left mouse button",
+        ),
     )
 
     # Defaults for module configurables
     _default_status = {
-        'none': 'GitHub',
-        'minor': 'GitHub',
-        'major': 'GitHub',
-        'critical': 'GitHub',
+        "none": "GitHub",
+        "minor": "GitHub",
+        "major": "GitHub",
+        "critical": "GitHub",
     }
     _default_colors = {
-        'none': '#28a745',
-        'minor': '#dbab09',
-        'major': '#e36209',
-        'critical': '#dc3545',
+        "none": "#28a745",
+        "minor": "#dbab09",
+        "major": "#e36209",
+        "critical": "#dc3545",
     }
 
     # Module configurables
-    format = '{status}[ {unread}][ {update_error}]'
+    format = "{status}[ {unread}][ {update_error}]"
     status = _default_status
     colors = _default_colors
-    refresh_icon = '⟳'
-    update_error = '!'
-    username = ''
-    password = ''
-    access_token = ''
-    unread_marker = '•'
+    refresh_icon = "⟳"
+    update_error = "!"
+    username = ""
+    password = ""
+    access_token = ""
+    unread_marker = "•"
     notify_status = False
     notify_unread = False
-    unread_notification_template = 'You have %d new notification(s)'
+    unread_notification_template = "You have %d new notification(s)"
     api_methods_url = API_METHODS_URL
     status_url = STATUS_URL
     notifications_url = NOTIFICATIONS_URL
@@ -258,9 +293,9 @@ class Github(IntervalModule):
     keyring_backend = None
 
     # Other
-    unread = ''
+    unread = ""
     unknown_color = None
-    unknown_status = '?'
+    unknown_status = "?"
     failed_update = False
     __previous_json = None
     __current_json = None
@@ -268,26 +303,23 @@ class Github(IntervalModule):
     previous_unread = None
     current_unread = None
     config_error = None
-    data = {'status': '',
-            'unread': 0,
-            'unread_count': '',
-            'update_error': ''}
-    output = {'full_text': '', 'color': None}
+    data = {"status": "", "unread": 0, "unread_count": "", "update_error": ""}
+    output = {"full_text": "", "color": None}
 
     # Click events
-    on_leftclick = ['perform_update']
-    on_rightclick = ['show_status_notification']
-    on_doubleleftclick = ['launch_notifications_url']
-    on_doublerightclick = ['launch_status_url']
+    on_leftclick = ["perform_update"]
+    on_rightclick = ["show_status_notification"]
+    on_doubleleftclick = ["launch_notifications_url"]
+    on_doublerightclick = ["launch_status_url"]
 
     @require(internet)
     def launch_status_url(self):
-        self.logger.debug('Launching %s in browser', self.status_url)
+        self.logger.debug("Launching %s in browser", self.status_url)
         user_open(self.status_url)
 
     @require(internet)
     def launch_notifications_url(self):
-        self.logger.debug('Launching %s in browser', self.notifications_url)
+        self.logger.debug("Launching %s in browser", self.notifications_url)
         user_open(self.notifications_url)
 
     def init(self):
@@ -301,8 +333,8 @@ class Github(IntervalModule):
             new_colors.update(self.colors)
             self.colors = new_colors
 
-        self.logger.debug('status = %s', self.status)
-        self.logger.debug('colors = %s', self.colors)
+        self.logger.debug("status = %s", self.status)
+        self.logger.debug("colors = %s", self.colors)
 
         self.condition = threading.Condition()
         self.thread = threading.Thread(target=self.update_loop, daemon=True)
@@ -316,40 +348,42 @@ class Github(IntervalModule):
                     self.condition.wait(self.interval)
                 self.perform_update()
         except Exception:
-            msg = 'Exception in {thread} at {time}, module {name}'.format(
+            msg = "Exception in {thread} at {time}, module {name}".format(
                 thread=threading.current_thread().name,
-                time=time.strftime('%c'),
+                time=time.strftime("%c"),
                 name=self.__class__.__name__,
             )
             self.logger.error(msg, exc_info=True)
 
     @require(internet)
     def status_api_request(self, url):
-        self.logger.debug('Making GitHub Status API request to %s', url)
+        self.logger.debug("Making GitHub Status API request to %s", url)
         try:
             with urlopen(url) as content:
                 try:
-                    content_type = dict(content.getheaders())['Content-Type']
-                    charset = re.search(r'charset=(.*)', content_type).group(1)
+                    content_type = dict(content.getheaders())["Content-Type"]
+                    charset = re.search(r"charset=(.*)", content_type).group(1)
                 except AttributeError:
-                    charset = 'utf-8'
+                    charset = "utf-8"
                 response_json = content.read().decode(charset).strip()
                 if not response_json:
-                    self.logger.error('JSON response from %s was blank', url)
+                    self.logger.error("JSON response from %s was blank", url)
                     return {}
                 try:
                     response = json.loads(response_json)
                 except json.decoder.JSONDecodeError as exc:
-                    self.logger.error('Error loading JSON: %s', exc)
-                    self.logger.debug('JSON text that failed to load: %s',
-                                      response_json)
+                    self.logger.error("Error loading JSON: %s", exc)
+                    self.logger.debug(
+                        "JSON text that failed to load: %s", response_json
+                    )
                     return {}
-                self.logger.log(5, 'API response: %s', response)
+                self.logger.log(5, "API response: %s", response)
                 return response
         except Exception as exc:
             self.logger.error(
-                'Failed to make API request to %s. Exception follows:', url,
-                exc_info=True
+                "Failed to make API request to %s. Exception follows:",
+                url,
+                exc_info=True,
             )
             return {}
 
@@ -362,7 +396,9 @@ class Github(IntervalModule):
                 # i3pystatus was started. Set self.__previous_json and exit.
                 self.__previous_json = response
                 return
-            if response.get('status', {}).get('description') == self.__previous_json.get('status', {}).get('description'):
+            if response.get("status", {}).get(
+                "description"
+            ) == self.__previous_json.get("status", {}).get("description"):
                 # No change, so no notification
                 return
             self.__previous_json = response
@@ -376,23 +412,22 @@ class Github(IntervalModule):
 
     @staticmethod
     def notify(message):
-        return DesktopNotification(title='GitHub', body=message).display()
+        return DesktopNotification(title="GitHub", body=message).display()
 
     def skip_notify(self, message):
         self.logger.debug(
-            'Desktop notifications turned off. Skipped notification: %s',
-            message
+            "Desktop notifications turned off. Skipped notification: %s", message
         )
         return False
 
     def show_status_notification(self):
         message = self.current_status_description
-        self.skip_notify(message) \
-            if not self.notify_status or (self.previous_status is None and self.current_status == 'none') \
-            else self.notify(message)
+        self.skip_notify(message) if not self.notify_status or (
+            self.previous_status is None and self.current_status == "none"
+        ) else self.notify(message)
 
     def show_unread_notification(self):
-        if '%d' not in self.unread_notification_template:
+        if "%d" not in self.unread_notification_template:
             formatted = self.unread_notification_template
         else:
             try:
@@ -403,20 +438,20 @@ class Github(IntervalModule):
                 formatted = self.unread_notification_template % new_unread
             except TypeError as exc:
                 self.logger.error(
-                    'Failed to format {0!r}: {1}'.format(
-                        self.unread_notification_template,
-                        exc
+                    "Failed to format {0!r}: {1}".format(
+                        self.unread_notification_template, exc
                     )
                 )
                 return False
-        return self.skip_notify(formatted) \
-            if not self.notify_unread \
+        return (
+            self.skip_notify(formatted)
+            if not self.notify_unread
             else self.notify(formatted)
+        )
 
     @require(internet)
     def perform_update(self):
-        self.output['full_text'] = \
-            self.refresh_icon + self.output.get('full_text', '')
+        self.output["full_text"] = self.refresh_icon + self.output.get("full_text", "")
         self.failed_update = False
 
         self.update_status()
@@ -426,43 +461,41 @@ class Github(IntervalModule):
         except ConfigError as exc:
             self.config_error = exc
 
-        self.data['update_error'] = self.update_error \
-            if self.failed_update \
-            else ''
+        self.data["update_error"] = self.update_error if self.failed_update else ""
         self.refresh_display()
 
     @property
     def current_incidents(self):
         try:
-            return self.__current_json['incidents']
+            return self.__current_json["incidents"]
         except (KeyError, TypeError):
             return []
 
     @property
     def previous_incidents(self):
         try:
-            return self.__previous_json['incidents']
+            return self.__previous_json["incidents"]
         except (KeyError, TypeError):
             return []
 
     @property
     def current_status(self):
         try:
-            return self.__current_json['status']['indicator']
+            return self.__current_json["status"]["indicator"]
         except (KeyError, TypeError):
             return None
 
     @property
     def previous_status(self):
         try:
-            return self.__previous_json['status']['indicator']
+            return self.__previous_json["status"]["indicator"]
         except (KeyError, TypeError):
             return None
 
     @property
     def current_status_description(self):
         try:
-            return self.__current_json['status']['description']
+            return self.__current_json["status"]["description"]
         except (KeyError, TypeError):
             return None
 
@@ -475,7 +508,7 @@ class Github(IntervalModule):
                 self.failed_update = True
                 return
 
-            self.data['status'] = self.status.get(self.current_status)
+            self.data["status"] = self.status.get(self.current_status)
             if self.current_incidents != self.previous_incidents:
                 self.show_status_notification()
             self.__previous_json = self.__current_json
@@ -483,8 +516,9 @@ class Github(IntervalModule):
         except Exception:
             # Don't let an uncaught exception kill the update thread
             self.logger.error(
-                'Uncaught error occurred while checking GitHub status. '
-                'Exception follows:', exc_info=True
+                "Uncaught error occurred while checking GitHub status. "
+                "Exception follows:",
+                exc_info=True,
             )
             self.failed_update = True
 
@@ -497,29 +531,29 @@ class Github(IntervalModule):
             if not self.username and not self.password and not self.access_token:
                 # Auth not configured
                 self.logger.debug(
-                    'No auth configured, notifications will not be checked')
+                    "No auth configured, notifications will not be checked"
+                )
                 return True
 
             if not HAS_REQUESTS:
                 self.logger.error(
-                    'The requests module is required to check GitHub notifications')
+                    "The requests module is required to check GitHub notifications"
+                )
                 self.failed_update = True
                 return False
 
             self.logger.debug(
-                'Checking unread notifications using %s',
-                'access token' if self.access_token else 'username/password'
+                "Checking unread notifications using %s",
+                "access token" if self.access_token else "username/password",
             )
 
             if self.access_token:
                 request_kwargs = {
-                    'headers': {
-                        'Authorization': 'token {}'.format(self.access_token),
-                    },
+                    "headers": {"Authorization": "token {}".format(self.access_token),},
                 }
             else:
                 request_kwargs = {
-                    'auth': (self.username, self.password),
+                    "auth": (self.username, self.password),
                 }
 
             self.current_unread = set()
@@ -530,25 +564,25 @@ class Github(IntervalModule):
                 old_unread_url = unread_url
                 page_num += 1
                 self.logger.debug(
-                    'Reading page %d of notifications (%s)',
-                    page_num, unread_url
+                    "Reading page %d of notifications (%s)", page_num, unread_url
                 )
                 try:
                     response = requests.get(unread_url, **request_kwargs)
                     self.logger.log(
                         5,
-                        'Raw return from GitHub notification check: %s',
-                        response.text)
+                        "Raw return from GitHub notification check: %s",
+                        response.text,
+                    )
                     unread_data = json.loads(response.text)
                 except (requests.ConnectionError, requests.Timeout) as exc:
-                    self.logger.error(
-                        'Failed to check unread notifications: %s', exc)
+                    self.logger.error("Failed to check unread notifications: %s", exc)
                     self.failed_update = True
                     return False
                 except json.decoder.JSONDecodeError as exc:
-                    self.logger.error('Error loading JSON: %s', exc)
+                    self.logger.error("Error loading JSON: %s", exc)
                     self.logger.debug(
-                        'JSON text that failed to load: %s', response.text)
+                        "JSON text that failed to load: %s", response.text
+                    )
                     self.failed_update = True
                     return False
 
@@ -556,69 +590,67 @@ class Github(IntervalModule):
                 if isinstance(unread_data, dict):
                     raise ConfigError(
                         unread_data.get(
-                            'message',
-                            'Unknown error encountered retrieving unread notifications'
+                            "message",
+                            "Unknown error encountered retrieving unread notifications",
                         )
                     )
 
                 # Update the current count of unread notifications
-                self.current_unread.update(
-                    [x['id'] for x in unread_data if 'id' in x]
-                )
+                self.current_unread.update([x["id"] for x in unread_data if "id" in x])
 
                 # Check 'Link' header for next page of notifications
                 # (https://tools.ietf.org/html/rfc5988#section-5)
-                self.logger.debug('Checking for next page of notifications')
+                self.logger.debug("Checking for next page of notifications")
                 try:
-                    link_header = response.headers['Link']
+                    link_header = response.headers["Link"]
                 except AttributeError:
                     self.logger.error(
-                        'No headers present in response. This might be due to '
-                        'an API change in the requests module.'
+                        "No headers present in response. This might be due to "
+                        "an API change in the requests module."
                     )
                     self.failed_update = True
                     continue
                 except KeyError:
-                    self.logger.debug('Only one page of notifications present')
+                    self.logger.debug("Only one page of notifications present")
                     continue
                 else:
                     # Process 'Link' header
                     try:
                         links = requests.utils.parse_header_links(link_header)
                     except Exception as exc:
-                        self.logger.error(
-                            'Failed to parse \'Link\' header: %s', exc
-                        )
+                        self.logger.error("Failed to parse 'Link' header: %s", exc)
                         self.failed_update = True
                         continue
 
                     for link in links:
                         try:
-                            link_rel = link['rel']
-                            if link_rel != 'next':
+                            link_rel = link["rel"]
+                            if link_rel != "next":
                                 # Link does not refer to the next page, skip it
                                 continue
                             # Set the unread_url so that when we reach the top
                             # of the outer loop, we have a new URL to check.
-                            unread_url = link['url']
+                            unread_url = link["url"]
                             break
                         except TypeError:
                             # Malformed hypermedia link
                             self.logger.warning(
-                                'Malformed hypermedia link (%s) in \'Link\' '
-                                'header (%s)', link, links
+                                "Malformed hypermedia link (%s) in 'Link' "
+                                "header (%s)",
+                                link,
+                                links,
                             )
                             continue
                     else:
-                        self.logger.debug('No more pages of notifications remain')
+                        self.logger.debug("No more pages of notifications remain")
 
             if self.failed_update:
                 return False
 
-            self.data['unread_count'] = len(self.current_unread)
-            self.data['unread'] = self.unread_marker \
-                if self.data['unread_count'] > 0 \
-                else ''
+            self.data["unread_count"] = len(self.current_unread)
+            self.data["unread"] = (
+                self.unread_marker if self.data["unread_count"] > 0 else ""
+            )
 
             if self.previous_unread is not None:
                 if not self.current_unread.issubset(self.previous_unread):
@@ -633,24 +665,25 @@ class Github(IntervalModule):
         except Exception as exc:
             # Don't let an uncaught exception kill the update thread
             self.logger.error(
-                'Uncaught error occurred while checking GitHub notifications. '
-                'Exception follows:', exc_info=True
+                "Uncaught error occurred while checking GitHub notifications. "
+                "Exception follows:",
+                exc_info=True,
             )
             self.failed_update = True
             return False
 
     def refresh_display(self):
-        previous_color = self.output.get('color')
+        previous_color = self.output.get("color")
         try:
-            color = self.colors.get(
-                self.current_status,
-                self.unknown_color)
+            color = self.colors.get(self.current_status, self.unknown_color)
         except TypeError:
             # Shouldn't get here, but this would happen if this function is
             # called before we check the current status for the first time.
             color = previous_color
-        self.output = {'full_text': formatp(self.format, **self.data).strip(),
-                       'color': color}
+        self.output = {
+            "full_text": formatp(self.format, **self.data).strip(),
+            "color": color,
+        }
 
     def run(self):
         if self.config_error is not None:

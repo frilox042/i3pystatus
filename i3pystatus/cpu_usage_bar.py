@@ -19,17 +19,29 @@ class CpuUsageBar(CpuUsage, ColorRangeModule):
     """
 
     format = "{usage_bar}"
-    bar_type = 'horizontal'
-    cpu = 'usage_cpu'
+    bar_type = "horizontal"
+    cpu = "usage_cpu"
 
     settings = (
         ("format", "format string"),
-        ("bar_type", "whether the bar should be vertical or horizontal. "
-                     "Allowed values: `vertical` or `horizontal`"),
-        ("cpu", "cpu to base the colors on. Choices are 'usage_cpu' for all or 'usage_cpu*'."
-                " Replace '*' by core number starting at 0."),
-        ("start_color", "Hex or English name for start of color range, eg '#00FF00' or 'green'"),
-        ("end_color", "Hex or English name for end of color range, eg '#FF0000' or 'red'"),
+        (
+            "bar_type",
+            "whether the bar should be vertical or horizontal. "
+            "Allowed values: `vertical` or `horizontal`",
+        ),
+        (
+            "cpu",
+            "cpu to base the colors on. Choices are 'usage_cpu' for all or 'usage_cpu*'."
+            " Replace '*' by core number starting at 0.",
+        ),
+        (
+            "start_color",
+            "Hex or English name for start of color range, eg '#00FF00' or 'green'",
+        ),
+        (
+            "end_color",
+            "Hex or English name for end of color range, eg '#FF0000' or 'red'",
+        ),
         ("dynamic_color", "Use dynamic color"),
     )
 
@@ -43,10 +55,10 @@ class CpuUsageBar(CpuUsage, ColorRangeModule):
         cpu_usage_bar = {}
 
         for core, usage in cpu_usage.items():
-            core = core.replace('usage', 'usage_bar')
-            if self.bar_type == 'horizontal':
+            core = core.replace("usage", "usage_bar")
+            if self.bar_type == "horizontal":
                 cpu_usage_bar[core] = make_bar(usage)
-            elif self.bar_type == 'vertical':
+            elif self.bar_type == "vertical":
                 cpu_usage_bar[core] = make_vertical_bar(usage)
             else:
                 raise Exception("bar_type must be 'horizontal' or 'vertical'!")
@@ -54,10 +66,10 @@ class CpuUsageBar(CpuUsage, ColorRangeModule):
         cpu_usage.update(cpu_usage_bar)
 
         # for backward compatibility
-        cpu_usage['usage_bar'] = cpu_usage['usage_bar_cpu']
+        cpu_usage["usage_bar"] = cpu_usage["usage_bar_cpu"]
 
         self.data = cpu_usage
         self.output = {
             "full_text": self.format.format_map(cpu_usage),
-            'color': self.get_gradient(cpu_usage[self.cpu], self.colors, 100)
+            "color": self.get_gradient(cpu_usage[self.cpu], self.colors, 100),
         }

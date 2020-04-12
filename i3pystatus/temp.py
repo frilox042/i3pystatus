@@ -9,17 +9,14 @@ class Sensor:
     """
 
     def __init__(self, name, current, maximum, critical):
-        self.name = name.replace(' ', '_')
+        self.name = name.replace(" ", "_")
         self.current = int(current)
         self.maximum = int(maximum) if maximum else int(critical)
         self.critical = int(critical)
 
     def __repr__(self):
         return "Sensor(name='{}', current={}, maximum={}, critical={})".format(
-            self.name,
-            self.current,
-            self.maximum,
-            self.critical
+            self.name, self.current, self.maximum, self.critical
         )
 
     def is_warning(self):
@@ -32,6 +29,7 @@ class Sensor:
 def get_sensors():
     """ Detect and return a list of Sensor objects """
     import sensors
+
     found_sensors = list()
 
     def get_subfeature_value(feature, subfeature_type):
@@ -45,10 +43,21 @@ def get_sensors():
                 try:
                     name = chip.get_label(feature)
                     max = get_subfeature_value(feature, sensors.SUBFEATURE_TEMP_MAX)
-                    current = get_subfeature_value(feature, sensors.SUBFEATURE_TEMP_INPUT)
-                    critical = get_subfeature_value(feature, sensors.SUBFEATURE_TEMP_CRIT)
+                    current = get_subfeature_value(
+                        feature, sensors.SUBFEATURE_TEMP_INPUT
+                    )
+                    critical = get_subfeature_value(
+                        feature, sensors.SUBFEATURE_TEMP_CRIT
+                    )
                     if critical:
-                        found_sensors.append(Sensor(name=name, current=current, maximum=max, critical=critical))
+                        found_sensors.append(
+                            Sensor(
+                                name=name,
+                                current=current,
+                                maximum=max,
+                                critical=critical,
+                            )
+                        )
                 except sensors.SensorsException:
                     continue
     return found_sensors
@@ -147,13 +156,27 @@ class Temperature(IntervalModule, ColorRangeModule):
     """
 
     settings = (
-        ("format",
-         "format string used for output. {temp} is the temperature in degrees celsius"),
-        ('display_if', 'snippet that gets evaluated. if true, displays the module output'),
-        ('lm_sensors_enabled', 'whether or not lm_sensors should be used for obtaining CPU temperature information'),
-        ('urgent_on', 'whether to flag as urgent when temperature exceeds urgent value or critical value '
-                      '(requires lm_sensors_enabled)'),
-        ('dynamic_color', 'whether to set the color dynamically (overrides alert_color)'),
+        (
+            "format",
+            "format string used for output. {temp} is the temperature in degrees celsius",
+        ),
+        (
+            "display_if",
+            "snippet that gets evaluated. if true, displays the module output",
+        ),
+        (
+            "lm_sensors_enabled",
+            "whether or not lm_sensors should be used for obtaining CPU temperature information",
+        ),
+        (
+            "urgent_on",
+            "whether to flag as urgent when temperature exceeds urgent value or critical value "
+            "(requires lm_sensors_enabled)",
+        ),
+        (
+            "dynamic_color",
+            "whether to set the color dynamically (overrides alert_color)",
+        ),
         "color",
         "file",
         "alert_temp",
@@ -164,14 +187,16 @@ class Temperature(IntervalModule, ColorRangeModule):
     file = "/sys/class/thermal/thermal_zone0/temp"
     alert_temp = 90
     alert_color = "#FF0000"
-    display_if = 'True'
+    display_if = "True"
 
     lm_sensors_enabled = False
     dynamic_color = False
-    urgent_on = 'warning'
+    urgent_on = "warning"
 
     def init(self):
-        self.pango_enabled = self.hints.get("markup", False) and self.hints["markup"] == "pango"
+        self.pango_enabled = (
+            self.hints.get("markup", False) and self.hints["markup"] == "pango"
+        )
         self.colors = self.get_hex_color_range(self.start_color, self.end_color, 100)
 
     def run(self):
@@ -205,26 +230,28 @@ class Temperature(IntervalModule, ColorRangeModule):
         data = dict()
         found_sensors = get_sensors()
         if len(found_sensors) == 0:
-            raise Exception("No sensors detected! "
-                            "Ensure lm-sensors is installed and check the output of the `sensors` command.")
+            raise Exception(
+                "No sensors detected! "
+                "Ensure lm-sensors is installed and check the output of the `sensors` command."
+            )
         for sensor in found_sensors:
             data[sensor.name] = self.format_sensor(sensor)
             data["{}_bar".format(sensor.name)] = self.format_sensor_bar(sensor)
-        data['temp'] = max((s.current for s in found_sensors))
+        data["temp"] = max((s.current for s in found_sensors))
         return {
-            'full_text': self.format.format(**data),
-            'urgent': self.get_urgent(found_sensors),
-            'color': self.color if not self.dynamic_color else None,
+            "full_text": self.format.format(**data),
+            "urgent": self.get_urgent(found_sensors),
+            "color": self.color if not self.dynamic_color else None,
         }
 
     def get_urgent(self, sensors):
         """ Determine if any sensors should set the urgent flag. """
-        if self.urgent_on not in ('warning', 'critical'):
+        if self.urgent_on not in ("warning", "critical"):
             raise Exception("urgent_on must be one of (warning, critical)")
         for sensor in sensors:
-            if self.urgent_on == 'warning' and sensor.is_warning():
+            if self.urgent_on == "warning" and sensor.is_warning():
                 return True
-            elif self.urgent_on == 'critical' and sensor.is_critical():
+            elif self.urgent_on == "critical" and sensor.is_critical():
                 return True
         return False
 

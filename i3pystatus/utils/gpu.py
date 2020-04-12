@@ -2,9 +2,18 @@ import subprocess
 from collections import namedtuple
 from typing import Optional
 
-GPUUsageInfo = namedtuple('GPUUsageInfo', ['total_mem', 'avail_mem', 'used_mem',
-                                           'temp', 'percent_fan',
-                                           'usage_gpu', 'usage_mem'])
+GPUUsageInfo = namedtuple(
+    "GPUUsageInfo",
+    [
+        "total_mem",
+        "avail_mem",
+        "used_mem",
+        "temp",
+        "percent_fan",
+        "usage_gpu",
+        "usage_mem",
+    ],
+)
 
 
 def _convert_nvidia_smi_value(value) -> Optional[int]:
@@ -32,19 +41,29 @@ def query_nvidia_smi(gpu_number) -> GPUUsageInfo:
 
         Raises exception with readable comment
     """
-    params = ["memory.total", "memory.free", "memory.used",
-              "temperature.gpu", "fan.speed",
-              "utilization.gpu", "utilization.memory"]
+    params = [
+        "memory.total",
+        "memory.free",
+        "memory.used",
+        "temperature.gpu",
+        "fan.speed",
+        "utilization.gpu",
+        "utilization.memory",
+    ]
     try:
-        output = subprocess.check_output(["nvidia-smi",
-                                          "--query-gpu={}".format(','.join(params)),
-                                          "--format=csv,noheader,nounits"])
+        output = subprocess.check_output(
+            [
+                "nvidia-smi",
+                "--query-gpu={}".format(",".join(params)),
+                "--format=csv,noheader,nounits",
+            ]
+        )
     except FileNotFoundError:
         raise Exception("No nvidia-smi")
     except subprocess.CalledProcessError:
         raise Exception("nvidia-smi call failed")
 
-    output = output.decode('utf-8').split("\n")[gpu_number].strip()
+    output = output.decode("utf-8").split("\n")[gpu_number].strip()
     values = output.split(", ")
 
     values = [_convert_nvidia_smi_value(value) for value in values]

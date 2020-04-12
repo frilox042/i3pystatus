@@ -8,7 +8,7 @@ from i3pystatus.core.util import TimeWrapper
 
 def proxyobj(bus, path, interface):
     """ commodity to apply an interface to a proxy object """
-    obj = bus.get_object('org.bluez', path)
+    obj = bus.get_object("org.bluez", path)
     return dbus.Interface(obj, interface)
 
 
@@ -43,7 +43,7 @@ def get_bluetooth_device_list(show_disconnected):
     # now we are ready to get the informations we need
     bt_devices = []
     for device in devices:
-        obj = proxyobj(bus, device, 'org.freedesktop.DBus.Properties')
+        obj = proxyobj(bus, device, "org.freedesktop.DBus.Properties")
         # skip blocked and unpaired devices.
         if getprop(obj, "Blocked", bool):
             continue
@@ -52,11 +52,13 @@ def get_bluetooth_device_list(show_disconnected):
         if not show_disconnected:
             if not getprop(obj, "Connected", bool):
                 continue
-        bt_devices.append({
-            "name": getprop(obj, "Name", str),
-            "dev_addr": getprop(obj, "Address", str),
-            "connected": getprop(obj, "Connected", bool)
-        })
+        bt_devices.append(
+            {
+                "name": getprop(obj, "Name", str),
+                "dev_addr": getprop(obj, "Address", str),
+                "connected": getprop(obj, "Connected", bool),
+            }
+        )
     return bt_devices
 
 
@@ -96,7 +98,7 @@ click to cycle backwards.
         ("format", "formatp string"),
         ("color", "Text color"),
         ("connected_color", "Connected device color"),
-        ("show_disconnected", "Show disconnected but paired devices")
+        ("show_disconnected", "Show disconnected but paired devices"),
     )
 
     format = "{name}: {dev_addr}"
@@ -105,8 +107,8 @@ click to cycle backwards.
 
     on_leftclick = "next_device"
     on_rightclick = "prev_device"
-    on_upscroll = 'next_device'
-    on_downscroll = 'prev_device'
+    on_upscroll = "next_device"
+    on_downscroll = "prev_device"
 
     num_devices = 0
     dev_index = 0
@@ -125,13 +127,13 @@ click to cycle backwards.
             self.num_devices = len(self.devices)
 
             fdict = {
-                "name": self.devices[self.dev_index]['name'],
-                "dev_addr": self.devices[self.dev_index]['dev_addr']
+                "name": self.devices[self.dev_index]["name"],
+                "dev_addr": self.devices[self.dev_index]["dev_addr"],
             }
 
             self.data = fdict
             color = self.color
-            if self.devices[self.dev_index]['connected']:
+            if self.devices[self.dev_index]["connected"]:
                 color = self.connected_color
             self.output = {
                 "full_text": formatp(self.format, **fdict).strip(),
